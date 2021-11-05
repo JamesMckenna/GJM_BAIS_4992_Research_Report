@@ -61,9 +61,8 @@ namespace IdentityAPI
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers(); //.RequireAuthorization("ApiScope"); another way to force Authorization on all requests to the server instead of services.AddAuthorization(options => {options.AddPolicy("IdentityAPIScope", policy => { policy.RequireClaim("scope", "IdentityAPI");});
+                endpoints.MapControllers(); //.RequireAuthorization("ApiScope"); another way to force Authorization on all requests to the server instead of services.AddAuthorization(options => {options.AddPolicy("IdentityAPIScope", policy => { policy.RequireClaim("scope", "IdentityAPI");});});
             });
-        });
         }
     }
 }
