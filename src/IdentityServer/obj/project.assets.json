@@ -1,8 +1,8 @@
 {
   "version": 3,
   "targets": {
-    ".NETCoreApp,Version=v3.1": {
-      "IdentityModel/4.3.0": {
+    "net5.0": {
+      "IdentityModel/4.4.0": {
         "type": "package",
         "dependencies": {
           "Newtonsoft.Json": "11.0.2",
@@ -15,11 +15,11 @@
           "lib/netstandard2.0/IdentityModel.dll": {}
         }
       },
-      "IdentityServer4/4.0.0": {
+      "IdentityServer4/4.1.2": {
         "type": "package",
         "dependencies": {
-          "IdentityModel": "4.3.0",
-          "IdentityServer4.Storage": "4.0.0",
+          "IdentityModel": "4.4.0",
+          "IdentityServer4.Storage": "4.1.2",
           "Microsoft.AspNetCore.Authentication.OpenIdConnect": "3.1.0",
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "5.6.0",
           "Newtonsoft.Json": "12.0.2"
@@ -34,10 +34,10 @@
           "Microsoft.AspNetCore.App"
         ]
       },
-      "IdentityServer4.Storage/4.0.0": {
+      "IdentityServer4.Storage/4.1.2": {
         "type": "package",
         "dependencies": {
-          "IdentityModel": "4.3.0"
+          "IdentityModel": "4.4.0"
         },
         "compile": {
           "lib/netstandard2.0/IdentityServer4.Storage.dll": {}
@@ -1038,15 +1038,15 @@
     }
   },
   "libraries": {
-    "IdentityModel/4.3.0": {
-      "sha512": "lxVs5yhCjNdJBYyjcDU0XbllQfDv103F4cdfUlyJynKIcdB4Oz4/KGhpqrDI7t6VXNgfPOYfMOA55WM6lpf92Q==",
+    "IdentityModel/4.4.0": {
+      "sha512": "b18wrIx5wnZlMxAX7oVsE+nDtAJ4hajYlH0xPlaRvo4r/fz08K6pPeZvbiqS9nfNbzfIgLFmNX+FL9qR9ZR5PA==",
       "type": "package",
-      "path": "identitymodel/4.3.0",
+      "path": "identitymodel/4.4.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "icon.jpg",
-        "identitymodel.4.3.0.nupkg.sha512",
+        "identitymodel.4.4.0.nupkg.sha512",
         "identitymodel.nuspec",
         "lib/net461/IdentityModel.dll",
         "lib/net461/IdentityModel.pdb",
@@ -1059,30 +1059,30 @@
         "lib/netstandard2.0/IdentityModel.xml"
       ]
     },
-    "IdentityServer4/4.0.0": {
-      "sha512": "jzXbhomPUG+k/XDKjVHJvL/7X0af+jlyCYmaPu4HGe8XSreL+cKBNat92qxrNtoJASA+69+QgL14Fm4cNcRjzA==",
+    "IdentityServer4/4.1.2": {
+      "sha512": "blaxxGuOA7v/w1q+fxn97wZ+x2ecG1ZD4mc/N/ZOXMNeFZZhqv+4LF26Gecyik3nWrJPmbMEtQbLmRsKG8k61w==",
       "type": "package",
-      "path": "identityserver4/4.0.0",
+      "path": "identityserver4/4.1.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "icon.jpg",
-        "identityserver4.4.0.0.nupkg.sha512",
+        "identityserver4.4.1.2.nupkg.sha512",
         "identityserver4.nuspec",
         "lib/netcoreapp3.1/IdentityServer4.dll",
         "lib/netcoreapp3.1/IdentityServer4.pdb",
         "lib/netcoreapp3.1/IdentityServer4.xml"
       ]
     },
-    "IdentityServer4.Storage/4.0.0": {
-      "sha512": "4TH/U5mSp/8UK2unoJYXqOZChHodtIH+nhAeAjX5S08QSbJatzZCYmOkj735SdewweJvyvKffISJYqvFPBgBmA==",
+    "IdentityServer4.Storage/4.1.2": {
+      "sha512": "KoSffyZyyeCNTIyJiZnCuPakJ1QbCHlpty6gbWUj/7yl+w0PXIchgmmJnJSvddzBb8iZ2xew/vGlxWUIP17P2g==",
       "type": "package",
-      "path": "identityserver4.storage/4.0.0",
+      "path": "identityserver4.storage/4.1.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "icon.jpg",
-        "identityserver4.storage.4.0.0.nupkg.sha512",
+        "identityserver4.storage.4.1.2.nupkg.sha512",
         "identityserver4.storage.nuspec",
         "lib/netstandard2.0/IdentityServer4.Storage.dll",
         "lib/netstandard2.0/IdentityServer4.Storage.pdb",
@@ -3676,14 +3676,15 @@
     }
   },
   "projectFileDependencyGroups": {
-    ".NETCoreApp,Version=v3.1": [
-      "IdentityServer4 >= 4.0.0",
+    "net5.0": [
+      "IdentityServer4 >= 4.1.2",
       "Serilog.AspNetCore >= 3.2.0"
     ]
   },
   "packageFolders": {
     "C:\\Users\\Sam Spade\\.nuget\\packages\\": {},
-    "C:\\Microsoft\\Xamarin\\NuGet\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
@@ -3696,23 +3697,26 @@
       "outputPath": "C:\\Users\\Sam Spade\\Documents\\GitHub\\GJM_BAIS_4992_Research_Report\\src\\IdentityServer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Microsoft\\Xamarin\\NuGet\\",
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
         "C:\\Users\\Sam Spade\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "netcoreapp3.1"
+        "net5.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "netcoreapp3.1": {
+        "net5.0": {
+          "targetAlias": "net5.0",
           "projectReferences": {}
         }
       },
@@ -3723,11 +3727,12 @@
       }
     },
     "frameworks": {
-      "netcoreapp3.1": {
+      "net5.0": {
+        "targetAlias": "net5.0",
         "dependencies": {
           "IdentityServer4": {
             "target": "Package",
-            "version": "[4.0.0, )"
+            "version": "[4.1.2, )"
           },
           "Serilog.AspNetCore": {
             "target": "Package",
@@ -3752,7 +3757,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.414\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   }

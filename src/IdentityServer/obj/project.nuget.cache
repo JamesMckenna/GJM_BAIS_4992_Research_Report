@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "jod5n4JtxRcwrobs75IjfSiwW26kAea+yw4RCagDDyLCUCNnVJPGo3na8G/8pMolAvc1HxPZFebrmEn66+YH2g==",
+  "dgSpecHash": "DQsfoIssM5RZclu0+Y6fDv1Z/1p4+u8DRQZU8WzK89XIt+qXEYyiaaaXLH1VBVPdjxVuJLi26yG8Ww6iMmHixg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Sam Spade\\Documents\\GitHub\\GJM_BAIS_4992_Research_Report\\src\\IdentityServer\\IdentityServer.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Sam Spade\\.nuget\\packages\\identitymodel\\4.3.0\\identitymodel.4.3.0.nupkg.sha512",
-    "C:\\Users\\Sam Spade\\.nuget\\packages\\identityserver4\\4.0.0\\identityserver4.4.0.0.nupkg.sha512",
-    "C:\\Users\\Sam Spade\\.nuget\\packages\\identityserver4.storage\\4.0.0\\identityserver4.storage.4.0.0.nupkg.sha512",
+    "C:\\Users\\Sam Spade\\.nuget\\packages\\identitymodel\\4.4.0\\identitymodel.4.4.0.nupkg.sha512",
+    "C:\\Users\\Sam Spade\\.nuget\\packages\\identityserver4\\4.1.2\\identityserver4.4.1.2.nupkg.sha512",
+    "C:\\Users\\Sam Spade\\.nuget\\packages\\identityserver4.storage\\4.1.2\\identityserver4.storage.4.1.2.nupkg.sha512",
     "C:\\Users\\Sam Spade\\.nuget\\packages\\microsoft.aspnetcore.authentication.openidconnect\\3.1.0\\microsoft.aspnetcore.authentication.openidconnect.3.1.0.nupkg.sha512",
     "C:\\Users\\Sam Spade\\.nuget\\packages\\microsoft.aspnetcore.hosting.abstractions\\2.0.0\\microsoft.aspnetcore.hosting.abstractions.2.0.0.nupkg.sha512",
     "C:\\Users\\Sam Spade\\.nuget\\packages\\microsoft.aspnetcore.hosting.server.abstractions\\2.0.0\\microsoft.aspnetcore.hosting.server.abstractions.2.0.0.nupkg.sha512",

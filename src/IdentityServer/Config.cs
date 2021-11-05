@@ -26,7 +26,7 @@ namespace IdentityServer
             { 
                 new Client
                 {
-                    ClientId = "Service_To_Service",
+                    ClientId = "ANativeClientOrService",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
 
                     ClientSecrets = {
