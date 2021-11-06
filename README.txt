@@ -83,3 +83,13 @@ is4inmem template from dotnet cli
 might have to run: To search for the templates on NuGet.org, run 'dotnet new is4inmem --search'.
 
 Changed some of the names of APIs and clients
+
+"Most of the code lives in the “Quickstart” folder using a “feature folder” style. If this style doesn’t suit you, feel free to organize the code in any way you want."
+
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+
+
+MvcClient: change launch settings and port number and start up projects
+Startup                     options.ClientId = "mvcClient"; options.ClientSecret = "aDifferentSecret"; must match IdentityServer Config.Client
+add Logout to a controller and a link to the nav menu _Layout.cshtmml
