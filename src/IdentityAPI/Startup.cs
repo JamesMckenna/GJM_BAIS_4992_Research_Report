@@ -28,6 +28,17 @@ namespace IdentityAPI
         {
             services.AddControllers();
 
+            services.AddCors(options =>
+            {
+                // this defines a CORS policy called "default"
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("https://localhost:5003")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options => {
                 options.Authority = "https://localhost:5001";
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -55,7 +66,7 @@ namespace IdentityAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors("default");
             app.UseAuthentication();
             app.UseAuthorization();
 

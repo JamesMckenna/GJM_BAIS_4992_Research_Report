@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "name": "jsclient",
+  "private": true,
+  "description": "identity-server-4-demo",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "James Mckenna",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "oidc-client": "^1.11.5"
+  }
+}
