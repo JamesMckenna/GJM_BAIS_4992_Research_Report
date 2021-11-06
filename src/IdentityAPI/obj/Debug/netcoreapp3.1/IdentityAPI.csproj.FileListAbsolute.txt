@@ -1,5 +1,0 @@
-C:\Users\Sam Spade\Documents\GitHub\GJM_BAIS_4992_Research_Report\src\IdentityAPI\obj\Debug\netcoreapp3.1\IdentityAPI.csprojAssemblyReference.cache
-C:\Users\Sam Spade\Documents\GitHub\GJM_BAIS_4992_Research_Report\src\IdentityAPI\obj\Debug\netcoreapp3.1\IdentityAPI.AssemblyInfoInputs.cache
-C:\Users\Sam Spade\Documents\GitHub\GJM_BAIS_4992_Research_Report\src\IdentityAPI\obj\Debug\netcoreapp3.1\IdentityAPI.AssemblyInfo.cs
-C:\Users\Sam Spade\Documents\GitHub\GJM_BAIS_4992_Research_Report\src\IdentityAPI\obj\Debug\netcoreapp3.1\IdentityAPI.csproj.CoreCompileInputs.cache
-C:\Users\Sam Spade\Documents\GitHub\GJM_BAIS_4992_Research_Report\src\IdentityAPI\obj\Debug\netcoreapp3.1\IdentityAPI.MvcApplicationPartsAssemblyInfo.cache
