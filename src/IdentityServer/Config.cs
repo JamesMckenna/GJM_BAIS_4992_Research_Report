@@ -56,11 +56,11 @@ namespace IdentityServer
 
                     AllowOfflineAccess = true,
                     AllowedScopes = { 
-                        //"openid", "profile", "scope2" 
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Address,
                         IdentityServerConstants.StandardScopes.Email,
+                        "IdentityAPI"
                     }
                 },
             };

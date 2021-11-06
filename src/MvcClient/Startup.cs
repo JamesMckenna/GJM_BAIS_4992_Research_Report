@@ -48,6 +48,8 @@ namespace MvcClient
                     options.ResponseType = "code";
                     options.Scope.Add("profile");
                     options.Scope.Add("openid");
+                    options.Scope.Add("IdentityAPI");
+                    options.Scope.Add("offline_access");
                 });
         }
 

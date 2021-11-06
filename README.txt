@@ -93,3 +93,5 @@ Changed some of the names of APIs and clients
 MvcClient: change launch settings and port number and start up projects
 Startup                     options.ClientId = "mvcClient"; options.ClientSecret = "aDifferentSecret"; must match IdentityServer Config.Client
 add Logout to a controller and a link to the nav menu _Layout.cshtmml
+
+add CallAPI to a controller and a link to the nav menu _Layout.cshtmml, add a view named json.cshtml
