@@ -77,3 +77,9 @@ namespace Client
         }
     }
 }
+
+
+is4inmem template from dotnet cli
+might have to run: To search for the templates on NuGet.org, run 'dotnet new is4inmem --search'.
+
+Changed some of the names of APIs and clients
