@@ -97,3 +97,5 @@ add Logout to a controller and a link to the nav menu _Layout.cshtmml
 add CallAPI to a controller and a link to the nav menu _Layout.cshtmml, add a view named json.cshtml
 
 Adding JSCLient change launch settings, add wwwroot directory to JSClient root dir, add packge.json then npm install oidc-client, add to Startup Projects
+
+From is4Ef and is4aspid, combine seeddata.cs

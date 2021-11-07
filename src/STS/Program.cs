@@ -3,13 +3,16 @@
 
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
+using System.Linq;
 
-namespace IdentityServer
+namespace STS
 {
     public class Program
     {
@@ -34,8 +37,32 @@ namespace IdentityServer
 
             try
             {
+                //var seed = true;
+                var seed = args.Contains("/seed");
+                if (seed)
+                {
+                    args = args.Except(new[] { "/seed" }).ToArray();
+                }
+
+                var host = CreateHostBuilder(args).Build();
+
+                if (seed)
+                {
+                    Log.Information("Seeding database...");
+                    var config = host.Services.GetRequiredService<IConfiguration>();
+                    var connectionString = config.GetConnectionString("DefaultConnection");
+                    string stsConfigurationConnection = config.GetConnectionString("STSConfigurationConnection");
+                    string stsOperationalConnection = config.GetConnectionString("STSOperationalConnection");
+                    string[] stsConecctionStrings = new string[] { stsConfigurationConnection, stsOperationalConnection };
+                    SeedData.EnsureSeedData(connectionString);
+                    StsSeedData.EnsureSeedData(stsConecctionStrings);
+
+                    Log.Information("Done seeding database.");
+                    return 0;
+                }
+
                 Log.Information("Starting host...");
-                CreateHostBuilder(args).Build().Run();
+                host.Run();
                 return 0;
             }
             catch (Exception ex)

@@ -3,14 +3,17 @@
 
 
 using IdentityServer4;
-using IdentityServerHost.Quickstart.UI;
+using STS.Data;
+using STS.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace IdentityServer
+namespace STS
 {
     public class Startup
     {
@@ -27,6 +30,13 @@ namespace IdentityServer
         {
             services.AddControllersWithViews();
 
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             var builder = services.AddIdentityServer(options =>
             {
                 options.Events.RaiseErrorEvents = true;
@@ -37,12 +47,20 @@ namespace IdentityServer
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
             })
-                .AddTestUsers(TestUsers.Users);
+                .AddAspNetIdentity<ApplicationUser>()
+                // this adds the config data from DB (clients, resources, CORS)
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder => builder.UseSqlite(Configuration.GetConnectionString("STSConfigurationConnection"));
+                })
+                // this adds the operational data from DB (codes, tokens, consents)
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder => builder.UseSqlite(Configuration.GetConnectionString("STSOperationalConnection"));
 
-            // in-memory, code config
-            builder.AddInMemoryIdentityResources(Config.IdentityResources);
-            builder.AddInMemoryApiScopes(Config.ApiScopes);
-            builder.AddInMemoryClients(Config.Clients);
+                    // this enables automatic token cleanup. this is optional.
+                    options.EnableTokenCleanup = true;
+                });
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
@@ -51,7 +69,7 @@ namespace IdentityServer
                 .AddGoogle(options =>
                 {
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-
+                    
                     // register your IdentityServer with Google at https://console.developers.google.com
                     // enable the Google+ API
                     // set the redirect URI to https://localhost:5001/signin-google
@@ -65,6 +83,7 @@ namespace IdentityServer
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
 
             app.UseStaticFiles();

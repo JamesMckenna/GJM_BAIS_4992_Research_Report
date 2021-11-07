@@ -6,7 +6,7 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
-namespace IdentityServer
+namespace STS
 {
     public static class Config
     {
@@ -47,7 +47,7 @@ namespace IdentityServer
                 {
                     ClientId = "mvcClient",
                     ClientSecrets = { new Secret("aDifferentSecret".Sha256()) },
-                    
+
                     AllowedGrantTypes = GrantTypes.Code,
 
                     RedirectUris = { "https://localhost:5002/signin-oidc" },
@@ -55,7 +55,7 @@ namespace IdentityServer
                     PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
-                    AllowedScopes = { 
+                    AllowedScopes = {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Address,
