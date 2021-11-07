@@ -56,12 +56,12 @@ namespace ANativeClientOrService
             Console.WriteLine("\n\n");
 
 
-            Console.WriteLine("Token Contents parse by IdentityAPI Get() IdentityController Action and returned");
+            Console.WriteLine("Token Contents parse by IdentityAPI Get() DeveloperController Action and returned");
             // call IdentityAPI
             var apiClient = new HttpClient();
             apiClient.SetBearerToken(tokenResponse.AccessToken);
 
-            var response = await apiClient.GetAsync("https://localhost:6001/identity");
+            var response = await apiClient.GetAsync("https://localhost:6001/developer");
 
             if (!response.IsSuccessStatusCode)
             {

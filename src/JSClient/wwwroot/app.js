@@ -37,7 +37,7 @@ function login() {
 
 function api() {
     mgr.getUser().then(function (user) {
-        var url = "https://localhost:6001/identity";
+        var url = "https://localhost:6001/developer";
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url);

@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityAPI.Data;
+using IdentityAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,7 +30,8 @@ namespace IdentityAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllersWithViews();
+            services.AddRazorPages();
 
             services.AddCors(options =>
             {
@@ -39,7 +44,33 @@ namespace IdentityAPI
                 });
             });
 
-            services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options => {
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlite(
+                    Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Default Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                //options.Password.RequiredUniqueChars = 1;
+                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.@_+";
+                options.User.RequireUniqueEmail = true;
+            });
+
+            services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
+            {
                 options.Authority = "https://localhost:5001";
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -47,8 +78,10 @@ namespace IdentityAPI
                 };
             });
 
-            services.AddAuthorization(options => {
-                options.AddPolicy("IdentityAPIScope", policy => {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IdentityAPIScope", policy =>
+                {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("scope", "IdentityAPI");
                 });
@@ -62,7 +95,7 @@ namespace IdentityAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -72,7 +105,8 @@ namespace IdentityAPI
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers(); //.RequireAuthorization("ApiScope"); another way to force Authorization on all requests to the server instead of services.AddAuthorization(options => {options.AddPolicy("IdentityAPIScope", policy => { policy.RequireClaim("scope", "IdentityAPI");});});
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }
