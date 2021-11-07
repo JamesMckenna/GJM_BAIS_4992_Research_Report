@@ -50,11 +50,9 @@ namespace STS
                 {
                     Log.Information("Seeding database...");
                     var config = host.Services.GetRequiredService<IConfiguration>();
-                    var connectionString = config.GetConnectionString("DefaultConnection");
                     string stsConfigurationConnection = config.GetConnectionString("STSConfigurationConnection");
                     string stsOperationalConnection = config.GetConnectionString("STSOperationalConnection");
                     string[] stsConecctionStrings = new string[] { stsConfigurationConnection, stsOperationalConnection };
-                    SeedData.EnsureSeedData(connectionString);
                     StsSeedData.EnsureSeedData(stsConecctionStrings);
 
                     Log.Information("Done seeding database.");
