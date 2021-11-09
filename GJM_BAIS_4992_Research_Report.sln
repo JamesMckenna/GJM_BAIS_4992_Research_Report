@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8E2ECA92-FEDD-4CDE-BEF3-FC0EF4896D78}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnAPI", "src\IdentityAPI\AnAPI.csproj", "{D5EF3A9B-D825-4811-8DB4-09261C34F745}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnAPI", "src\AnAPI\AnAPI.csproj", "{D5EF3A9B-D825-4811-8DB4-09261C34F745}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ANativeClientOrService", "src\ANativeClientOrService\ANativeClientOrService.csproj", "{0E8864A2-3C65-47D1-9F11-18F2C9B2AA32}"
 EndProject

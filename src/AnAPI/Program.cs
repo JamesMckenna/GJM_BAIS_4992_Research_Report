@@ -10,7 +10,7 @@ namespace AnAPI
     {
         public static void Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            
 
             Log.Logger = new LoggerConfiguration()
               .MinimumLevel.Debug()
@@ -21,6 +21,8 @@ namespace AnAPI
               .Enrich.FromLogContext()
               .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Code)
               .CreateLogger();
+
+            CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
