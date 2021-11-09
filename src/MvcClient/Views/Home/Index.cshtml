@@ -1,21 +1,32 @@
 ﻿@using Microsoft.AspNetCore.Authentication
 
-<h2>Claims</h2>
+@if (User.Identity.IsAuthenticated)
+{
+    <h2>Claims</h2>
+    <h3>You are logged in at the Secure Token Server, click the JS Client link to see Single Sign-On in action!</h3>
+    <dl>
+        @foreach (var claim in User.Claims)
+        {
+            <dt>@claim.Type</dt>
+            <dd>@claim.Value</dd>
+        }
+    </dl>
 
-<dl>
-    @foreach (var claim in User.Claims)
-    {
-        <dt>@claim.Type</dt>
-        <dd>@claim.Value</dd>
-    }
-</dl>
+    <h2>Properties</h2>
 
-<h2>Properties</h2>
+    <dl>
+        @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items)
+        {
+            <dt>@prop.Key</dt>
+            <dd>@prop.Value</dd>
+        }
 
-<dl>
-    @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items)
-    {
-        <dt>@prop.Key</dt>
-        <dd>@prop.Value</dd>
-    }
-</dl>
+
+
+    </dl>
+}
+else
+{
+    <h1>Hello, click Login</h1>
+}
+

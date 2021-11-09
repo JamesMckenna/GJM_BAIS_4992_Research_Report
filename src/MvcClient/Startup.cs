@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace MvcClient
 {
@@ -21,7 +16,6 @@ namespace MvcClient
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
@@ -44,16 +38,14 @@ namespace MvcClient
                     options.GetClaimsFromUserInfoEndpoint = true;
                     options.SaveTokens = true;
 
-                    //comment out the below lines, then login to see the difference in the claim attached to the token
                     options.ResponseType = "code";
                     options.Scope.Add("profile");
                     options.Scope.Add("openid");
-                    options.Scope.Add("IdentityAPI");
+                    options.Scope.Add("AnAPI");
                     options.Scope.Add("offline_access");
                 });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -63,7 +55,6 @@ namespace MvcClient
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
@@ -77,7 +68,7 @@ namespace MvcClient
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}").RequireAuthorization();
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

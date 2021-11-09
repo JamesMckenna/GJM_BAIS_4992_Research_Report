@@ -5,13 +5,36 @@
     <title></title>
 </head>
 <body>
-    <button id="login">Login</button>
-    <button id="api">Call API</button>
-    <button id="logout">Logout</button>
+    <div id="nav">
+        <button id="home">Home</button>
+        <button id="login">Login</button>
+    </div>
 
     <pre id="results"></pre>
 
     <script src="oidc-client.js"></script>
     <script src="app.js"></script>
+    <style>
+        a.button {
+            /* use inline-block because it respects padding */
+            display: inline - block;
+            /* padding creates clickable area around text (top/bottom, left/right) */
+            padding: 1px 6px;
+            /* round corners */
+            border-radius: 3px;
+            border-color: rgb(133, 133, 133);
+            border-width: 1px;
+            border-style: outset;
+            /* remove underline */
+            text-decoration: none;
+            /* set colors */
+            color: black;
+            background-color: #EFEFEF;
+            margin: 6px 6px;
+        }
+        button{
+            margin: 6px 6px;
+        }
+    </style>
 </body>
 </html>

@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MvcClient.Models;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace MvcClient.Controllers
 {
@@ -38,6 +36,20 @@ namespace MvcClient.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [HttpGet]
+        public async Task Login()
+        {
+            try
+            {
+                await HttpContext.ChallengeAsync("oidc", new AuthenticationProperties { RedirectUri = "Home/Index" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("~/Account/Login - an error occurred with the ChallengeAsync: {0}", ex);
+                throw;
+            }
+        }
+
         public IActionResult Logout()
         {
             return SignOut("Cookies", "oidc");
@@ -53,6 +65,11 @@ namespace MvcClient.Controllers
 
             ViewBag.Json = JArray.Parse(content).ToString();
             return View("json");
+        }
+
+        public IActionResult ManageAccount()
+        {
+            return Redirect("https://localhost:5005");
         }
     }
 }

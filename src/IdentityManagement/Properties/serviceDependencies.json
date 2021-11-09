@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "type": "sqlite",
+      "connectionId": "ConnectionStrings:DefaultConnection"
+    }
+  }
+}

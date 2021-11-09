@@ -43,7 +43,7 @@ namespace ANativeClientOrService
                 ClientId = "ANativeClientOrService",
                 ClientSecret = "aSuperSecret",
 
-                Scope = "IdentityAPI"
+                Scope = "AnAPI"
             });
 
             if (tokenResponse.IsError)
@@ -56,8 +56,8 @@ namespace ANativeClientOrService
             Console.WriteLine("\n\n");
 
 
-            Console.WriteLine("Token Contents parse by IdentityAPI Get() DeveloperController Action and returned");
-            // call IdentityAPI
+            Console.WriteLine("Token Contents parse by AnAPI Get() DeveloperController Action and returned");
+            // call AnAPI
             var apiClient = new HttpClient();
             apiClient.SetBearerToken(tokenResponse.AccessToken);
 
