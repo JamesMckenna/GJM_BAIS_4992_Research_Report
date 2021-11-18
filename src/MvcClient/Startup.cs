@@ -5,6 +5,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IdentityModel.Tokens.Jwt;
 
+
+
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel;
+using IdentityModel;
+
+
 namespace MvcClient
 {
     public class Startup
@@ -20,30 +29,39 @@ namespace MvcClient
         {
             services.AddControllersWithViews();
 
-            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+            JwtSecurityTokenHandler.DefaultMapInboundClaims = true;
+            services.AddAccessTokenManagement();
 
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = "Cookies";
                 options.DefaultChallengeScheme = "oidc";
             })
-                .AddCookie("Cookies")
-                .AddOpenIdConnect("oidc", options =>
+            .AddCookie("Cookies", options =>
+            {
+                options.Cookie.Name = "mvcClient";
+                options.Events.OnSigningOut = async e =>
                 {
-                    options.Authority = "https://localhost:5001";
+                    await e.HttpContext.RevokeUserRefreshTokenAsync();
+                };
 
-                    options.ClientId = "mvcClient";
-                    options.ClientSecret = "aDifferentSecret";
+            })
+            .AddOpenIdConnect("oidc", options =>
+            {
+                options.Authority = "https://localhost:5001";
 
-                    options.GetClaimsFromUserInfoEndpoint = true;
-                    options.SaveTokens = true;
+                options.ClientId = "mvcClient";
+                options.ClientSecret = "aDifferentSecret";
 
-                    options.ResponseType = "code";
-                    options.Scope.Add("profile");
-                    options.Scope.Add("openid");
-                    options.Scope.Add("AnAPI");
-                    options.Scope.Add("offline_access");
-                });
+                options.GetClaimsFromUserInfoEndpoint = true;
+                options.SaveTokens = true;
+
+                options.ResponseType = "code";
+                options.Scope.Add("AnAPI");
+                options.Scope.Add("offline_access");
+                options.Scope.Add("email");
+                options.Scope.Add("address");
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,0 +1,18 @@
+﻿@page
+@model IdentityManagement.Areas.Identity.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Admin";
+    ViewData["ActivePage"] = IdentityManagement.Areas.Identity.Pages.Admin.AdminNavPages.Index;
+}
+
+<h4>@ViewData["Title"]</h4>
+<div class="row">
+    <div class="col-md-6">
+        <p>A full User Management System is beyond the scope of this demo.</p>
+        <p>Typically, this service would allow one with the Role and or Claim of 'Administrator', to add, edit or delete Roles and Claims from Users registered with the system. This fucionality can be extended in a Multi-Tentant environment to ensure each organization can change its registered Users level of privilege </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

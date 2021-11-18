@@ -3,7 +3,7 @@
 @if (User.Identity.IsAuthenticated)
 {
     <h2>Claims</h2>
-    <h3>You are logged in at the Secure Token Server, click the JS Client link to see Single Sign-On in action!</h3>
+    <h5>You are logged in at the Secure Token Server, click the JS Client link to see Single Sign-On in action!</h5>
     <dl>
         @foreach (var claim in User.Claims)
         {

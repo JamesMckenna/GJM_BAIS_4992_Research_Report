@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MvcClient.Models;
@@ -69,7 +70,27 @@ namespace MvcClient.Controllers
 
         public IActionResult ManageAccount()
         {
-            return Redirect("https://localhost:5005");
+            return Redirect("https://localhost:5005/Identity/Account/Manage/Index");
+        }
+
+
+        public async Task<IActionResult> GetUserInfo()
+        {
+            var user_access_token = await HttpContext.GetUserAccessTokenAsync();
+
+            var client = new HttpClient();
+
+            var disco = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
+
+            var response = await client.GetUserInfoAsync(new UserInfoRequest
+            {
+                Address = disco.UserInfoEndpoint,
+                Token = user_access_token
+            });
+
+
+            var bp = "";
+            return View("Index", response);
         }
     }
 }

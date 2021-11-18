@@ -46,34 +46,46 @@ function mvcClient() {
     });
 }
 
-function manage() {
-    //mgr.getUser().then(function (user) {
-        //var url = "https://localhost:6001/identity/account/manage";
-
-        //var xhr = new XMLHttpRequest();
-        //xhr.open("GET", url);
-        //xhr.onload = function () {
-        //    log(xhr.status, JSON.parse(xhr.responseText));
-        //}
-        //xhr.setRequestHeader("Authorization", "Bearer " + user.access_token);
-        //xhr.send();
-        //window.location.href = "https://localhost:6001"
-    //});
-    window.location.href = "https://localhost:6001"
-}
-
 var config = {
+    metadata: {
+        issuer: "https://localhost:5001",
+        authorization_endpoint: "https://localhost:5001/connect/authorize",
+        userinfo_endpoint: "https://localhost:5001/connect/userinfo",
+        end_session_endpoint: "https://localhost:5001/connect/endsession",
+        jwks_uri: "https://localhost:5001/.well-known/openid-configuration/jwks",
+        check_session_iframe: "https://localhost:5001/connect/checksession",
+        introspection_endpoint: "https://localhost:5001/connect/introspect",
+        revocation_endpoint: "https://localhost:5001/connect/revocation",
+        token_endpoint: "https://localhost:5001/connect/token",
+        prompt: "none",
+    },
     authority: "https://localhost:5001",
     client_id: "JSClient",
     redirect_uri: "https://localhost:5003/callback.html",
     response_type: "code",
-    scope: "openid profile AnAPI",
+    scope: "openid profile offline_access AnAPI",
     post_logout_redirect_uri: "https://localhost:5003/index.html",
+    accessTokenExpiringNotificationTime: 150,
+
+    checkSessionInterval: 2000,
+    monitorSession: true,
+    automaticSilentRenew: false,
+
+    filterProtocolClaims: true,
+
+    revokeAccessTokenOnSignOut: true,
+    staleStateAge: 300,
+    silent_redirect_uri: "https://localhost:5003/silent-refresh.html",
 };
 var mgr = new Oidc.UserManager(config);
 
 mgr.getUser().then(function (user) {
     if (user) {
+
+
+        let loginBtn = document.getElementById("login");
+        loginBtn.remove();
+
         log("User logged in", user.profile);
         let body = document.getElementById("nav");
 
@@ -106,7 +118,7 @@ mgr.getUser().then(function (user) {
         managebtn.setAttribute("class", "button");
         managebtn.appendChild(manageValue);
         body.appendChild(managebtn);
-        managebtn.setAttribute("href", "https://localhost:6001/identity/account/manage");
+        managebtn.setAttribute("href", "https://localhost:5005/Identity/Account/Manage/Index");
        
         
         document.getElementById("api").addEventListener("click", api, false);

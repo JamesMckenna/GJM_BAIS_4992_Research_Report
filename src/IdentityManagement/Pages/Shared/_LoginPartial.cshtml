@@ -1,12 +1,13 @@
 ﻿@using IdentityManagement.Models
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Identity
+@*@inject SignInManager<ApplicationUser> SignInManager*@
+@*@inject UserManager<ApplicationUser> UserManager*@
 
 <ul class="navbar-nav">
     @if (User.Identity.IsAuthenticated)
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Claims.First(c => c.Type == "name").Value!</a>
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
@@ -19,20 +20,5 @@
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
     }
 </ul>
-@*@{
-    if (User.Identity.IsAuthenticated)
-    {
-        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-            <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
-        </form>
-    }
-    else
-    {
-        <p>You have successfully logged out of the application.</p>
-    }
-}*@

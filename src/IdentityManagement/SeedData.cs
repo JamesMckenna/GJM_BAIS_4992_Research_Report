@@ -2,17 +2,16 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using System;
-using System.Linq;
-using System.Security.Claims;
 using IdentityManagement.Data;
+using IdentityManagement.Models;
+using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using IdentityModel;
-using IdentityManagement.Models;
-using Microsoft.EntityFrameworkCore.Sqlite;
+using System;
+using System.Linq;
+using System.Security.Claims;
 
 namespace IdentityManagement
 {
@@ -57,6 +56,8 @@ namespace IdentityManagement
                             new Claim(JwtClaimTypes.GivenName, "Alice"),
                             new Claim(JwtClaimTypes.FamilyName, "Smith"),
                             new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
+                            new Claim("location", "somewhere"),
+                            new Claim("Admin", "Admin"),
                         }).Result;
                         if (!result.Succeeded)
                         {
@@ -89,7 +90,8 @@ namespace IdentityManagement
                             new Claim(JwtClaimTypes.GivenName, "Bob"),
                             new Claim(JwtClaimTypes.FamilyName, "Smith"),
                             new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-                            new Claim("location", "somewhere")
+                            new Claim("location", "somewhere"),
+                            new Claim("AppCustomClaim", "AppCustomClaim"),
                         }).Result;
                         if (!result.Succeeded)
                         {

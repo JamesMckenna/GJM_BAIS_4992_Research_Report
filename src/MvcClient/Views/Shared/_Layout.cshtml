@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Linq
+@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -21,16 +23,21 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                         @if (User.Identity.IsAuthenticated)
                         {
+                            var isAdmin = false;
+                            foreach (Claim c in User.Claims.ToList())
+                            {
+                                if (c.Type == "Admin" && c.Value == "Admin") isAdmin = true;
+                            }
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="CallAPI">CallAPI</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="GetUserInfo">Get User Info</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ManageAccount">Manage Account</a>
@@ -39,11 +46,24 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" href="https://localhost:5003">SSO JS Client</a>
                             </li>
+                            @if (isAdmin)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="https://localhost:5005/Identity/Admin/Index">Admin</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <h5 class="nav-link text-dark">Hello @User.Claims.First(c => c.Type == "name").Value</h5>
+                            </li>
+
                         }
                         else
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="https://localhost:5005/Identity/Account/Register">Register</a>
                             </li>
                         }
                     </ul>
