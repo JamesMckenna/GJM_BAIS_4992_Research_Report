@@ -35,37 +35,57 @@ namespace STS.Services
 
             claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
 
+            //Scopes requested by client that will beput into access token
             if (context.Caller == "ClaimsProviderAccessToken")
             {
                 claims.Add(new Claim(JwtClaimTypes.Name, user.UserName));
                 claims.Add(new Claim(IdentityServerConstants.StandardScopes.OpenId, sub));
                 claims.Add(new Claim(JwtClaimTypes.Scope, "AnAPI"));
-                claims.Add(new Claim(JwtClaimTypes.Scope, "read"));
-                claims.Add(new Claim(JwtClaimTypes.Scope, "write"));
-                if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "identityManagement").FirstOrDefault()?.Value))
+                //Some users may have scopes other may not, so check before trying to put in access token
+                //if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "invoiceManage").FirstOrDefault()?.Value))
+                //{
+                //    var invoice = principal.Claims.Where(claim => claim.Type == "invoiceManage").ToList();
+                //    invoice.ForEach(ct => claims.Add(new Claim(JwtClaimTypes.Scope, ct.Value)));
+                //}
+                //if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "identityManagementAdmin").FirstOrDefault()?.Value))
+                //{
+                //    var idManage = principal.Claims.Where(claim => claim.Type == "identityManagementAdmin").ToList();
+                //    idManage.ForEach(ct => claims.Add(new Claim(JwtClaimTypes.Scope, ct.Value)));
+                //}
+                if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "admin").FirstOrDefault()?.Value))
                 {
-                    claims.Add(new Claim("identityManagement", principal.Claims.Where(claim => claim.Type == "identityManagement").FirstOrDefault()?.Value));
+                    claims.Add(new Claim("admin", principal.Claims.Where(claim => claim.Type == "admin").FirstOrDefault()?.Value));
                 }
-                if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "identityManagement").FirstOrDefault()?.Value))
-                {
-                    claims.Add(new Claim("identityManagementAdmin", principal.Claims.Where(claim => claim.Type == "identityManagementAdmin").FirstOrDefault()?.Value));
-                }
+                //if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "identityManagement").FirstOrDefault()?.Value))
+                //{
+                //    claims.Add(new Claim("identityManagement", principal.Claims.Where(claim => claim.Type == "identityManagement").FirstOrDefault()?.Value));
+                //}
+                //if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "invoiceRead").FirstOrDefault()?.Value))
+                //{
+                //    claims.Add(new Claim("invoiceRead", principal.Claims.Where(claim => claim.Type == "invoiceRead").FirstOrDefault()?.Value));
+                //}
             }
 
+            //Identity Resources to be included in id token
             if (context.Caller == "ClaimsProviderIdentityToken")
             {
                 claims.Add(new Claim(JwtClaimTypes.Name, user.UserName));
                 claims.Add(new Claim(IdentityServerConstants.StandardScopes.OpenId, sub));
                 claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email));
+                if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "admin").FirstOrDefault()?.Value))
+                {
+                    claims.Add(new Claim("admin", principal.Claims.Where(claim => claim.Type == "admin").FirstOrDefault()?.Value));
+                }
             }
 
+            //A client can call the UserInfo Endpoint to get User's Identity Resources and Claims not included in id token
             if (context.Caller == "UserInfoEndpoint")
             {
                 claims.Add(new Claim(JwtClaimTypes.Name, user.UserName));
                 claims.Add(new Claim(IdentityServerConstants.StandardScopes.OpenId, sub));
                 claims.Add(new Claim(IdentityServerConstants.StandardScopes.Profile, user.UserName));
                 claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email));
-                //Some users may have claims other may not, so check before trying to pass a claim with value of null
+                //Some users may have claims others may not, so check before trying to return a claim with value of null
                 if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "address").FirstOrDefault()?.Value))
                 {
                     claims.Add(new Claim("address", principal.Claims.Where(claim => claim.Type == "address").FirstOrDefault()?.Value));

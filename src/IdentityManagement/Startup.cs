@@ -105,6 +105,7 @@ namespace IdentityManagement
                 options.Scope.Add("offline_access");
                 options.Scope.Add("identityManagement");
                 options.Scope.Add("identityManagementAdmin");
+                options.Scope.Add("admin");
             });
 
             services.AddRazorPages();

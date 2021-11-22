@@ -28,7 +28,7 @@
                             var isAdmin = false;
                             foreach (Claim c in User.Claims.ToList())
                             {
-                                if (c.Type == "Admin" && c.Value == "Admin") isAdmin = true;
+                                if (c.Type == "admin") isAdmin = true;
                             }
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>

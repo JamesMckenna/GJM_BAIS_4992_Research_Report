@@ -1,0 +1,15 @@
+﻿@using Microsoft.AspNetCore.Authentication
+
+@if (User.Identity.IsAuthenticated)
+{
+    var claims = ViewBag.claims;
+    <h2>UserInfo Endpoint</h2>
+    <p>User claims returned by the UserInfo Endpoint. Some of these claims may not be included in the access token or the id token and can only be returned to a client from the client making a request to the UserInfo Endpoint on the STS</p>
+    <dl>
+        @foreach (var claim in claims)
+        {
+            <dt>@claim.Type</dt>
+            <dd>@claim.Value</dd>
+        }
+    </dl>
+}

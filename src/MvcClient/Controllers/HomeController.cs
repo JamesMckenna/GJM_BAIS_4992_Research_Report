@@ -88,9 +88,8 @@ namespace MvcClient.Controllers
                 Token = user_access_token
             });
 
-
-            var bp = "";
-            return View("Index", response.Claims);
+            ViewBag.claims = response.Claims;
+            return View("userInfo");
         }
     }
 }

@@ -1,17 +1,10 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IdentityModel.Tokens.Jwt;
-
-
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.IdentityModel;
-using IdentityModel;
 
 
 namespace MvcClient
@@ -29,7 +22,6 @@ namespace MvcClient
         {
             services.AddControllersWithViews();
 
-            //JwtSecurityTokenHandler.DefaultMapInboundClaims = true;
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAccessTokenManagement();
 
@@ -54,23 +46,21 @@ namespace MvcClient
                 options.ClientId = "mvcClient";
                 options.ClientSecret = "aDifferentSecret";
 
+                //Don't include all User claims in id token,
+                //a client needs to make a seperate request to UserInfo Endpoint to get all a User's claims
                 options.GetClaimsFromUserInfoEndpoint = false;
                 options.SaveTokens = true;
                
                 options.ResponseType = "code";
                 options.Scope.Clear();
+                //Scope the client is requesting in the accees token
                 options.Scope.Add("AnAPI");
                 options.Scope.Add("offline_access");
                 options.Scope.Add("openid");
-                //options.Scope.Add("profile");
                 options.Scope.Add("invoiceRead");
                 options.Scope.Add("invoiceManage");
-                //options.Scope.Add("customClaim");
-                //options.Scope.Add("address");
                 options.Scope.Add("identityManagementAdmin");
                 options.Scope.Add("identityManagement");
-
-                //options.ClaimActions.MapUniqueJsonKey("customClaim", "customClaim");
             });
         }
 

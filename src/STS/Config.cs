@@ -69,18 +69,14 @@ namespace STS
         public static IEnumerable<ApiResource> ApiResources =>
         new List<ApiResource>
         {
-            //new ApiResource(name: "identityManagementAdmin", displayName: "Identity Management", userClaims: new [] { "admin", "name"  }){ ApiSecrets: new [] { new Secret("IdManagementSecret".Sha256()) }, },
-
             new ApiResource
             {
                 Name = "identityManagementAdmin",
                 DisplayName = "Identity Management",
-                //Description = "Administrator Access",
-                //ApiSecrets = { new Secret("IdManagementSecret".Sha256()) },
                 //the user claim included in access token
-                UserClaims = new [] { "admin", "name" },
+                UserClaims = new [] { "sub", "name", "email", "admin" },
                 //the endpoints user/client can access
-                Scopes = new [] { "admin", "write", "read" },
+                Scopes = new [] { "identityManagementAdmin" },
             },
 
             new ApiResource()
@@ -88,8 +84,8 @@ namespace STS
                 Name = "identityManagement",
                 DisplayName = "Identity Management",
                 Description = "Administrator Access",
-                UserClaims = { "name", "email" },
-                Scopes = { "write", "read" }
+                UserClaims = { "sub, name, email" },
+                Scopes = { "identityManagement" }
             },
         };
 
@@ -134,7 +130,7 @@ namespace STS
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Address,
-                    "customClaim", "identityManagementAdmin", "identityManagement",
+                    "customClaim", "identityManagementAdmin", "identityManagement", "admin",
                     //simple APIScopes
                     "AnAPI", "offline_access", "invoiceManage", "invoiceRead"
                 },
@@ -160,11 +156,13 @@ namespace STS
                 ClientName = "JavaScript Client",
                 Enabled = true,
                 RequireClientSecret = false,
-                AllowedGrantTypes =                         
-                { 
-                    GrantType.AuthorizationCode,
-                    GrantType.ClientCredentials 
-                },
+                //AllowedGrantTypes =                         
+                //{ 
+                //    GrantType.AuthorizationCode,
+                //    GrantType.ClientCredentials 
+                //},
+                AllowedGrantTypes = GrantTypes.Code,
+
 
                 RedirectUris = 
                 {
@@ -283,7 +281,7 @@ namespace STS
                     IdentityServerConstants.StandardScopes.Profile,
                     "offline_access", 
                     //Uses APIResource instead of APIScope
-                    "identityManagement", "identityManagementAdmin"
+                    "identityManagement", "identityManagementAdmin", "admin"
                 },
 
                 //The Token settings

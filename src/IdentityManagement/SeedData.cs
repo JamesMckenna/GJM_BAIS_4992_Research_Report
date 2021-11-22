@@ -57,7 +57,7 @@ namespace IdentityManagement
                             new Claim(JwtClaimTypes.FamilyName, "Smith"),
                             new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
                             new Claim("address", "cloud nine"),
-                            new Claim("admin", "Id Administrator"),
+                            new Claim("admin", "admin"),
                             new Claim("invoiceManage", "read.invoice"),
                             new Claim("invoiceManage", "write.invoice"),
                         }).Result;
