@@ -173,9 +173,7 @@ namespace STS
 
                 AllowedCorsOrigins = 
                 {
-                    //"https://localhost:5005", 
                     "https://localhost:6001", 
-                    //"https://localhost:5002", 
                     "https://localhost:5001", 
                     "https://localhost:5003"
                 },
