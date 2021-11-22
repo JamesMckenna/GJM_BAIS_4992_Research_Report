@@ -90,7 +90,7 @@ namespace MvcClient.Controllers
 
 
             var bp = "";
-            return View("Index", response);
+            return View("Index", response.Claims);
         }
     }
 }

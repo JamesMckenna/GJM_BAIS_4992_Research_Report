@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ConfigurationDataDb.db-journal" />
     <None Remove="ConfigurationDataDb.db-shm" />
   </ItemGroup>
 

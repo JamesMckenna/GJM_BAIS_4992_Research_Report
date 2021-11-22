@@ -62,7 +62,7 @@ var config = {
     authority: "https://localhost:5001",
     client_id: "JSClient",
     redirect_uri: "https://localhost:5003/callback.html",
-    response_type: "code",
+    response_type: "code id_token token",
     scope: "openid profile offline_access AnAPI",
     post_logout_redirect_uri: "https://localhost:5003/index.html",
     accessTokenExpiringNotificationTime: 150,

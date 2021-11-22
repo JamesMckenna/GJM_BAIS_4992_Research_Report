@@ -14,22 +14,83 @@ namespace STS
         public static IEnumerable<IdentityResource> IdentityResources =>
         new List<IdentityResource>
         {
+            //Will be returned from UserInfo Endpoint
+            //and/or included in the ID_Token
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
             new IdentityResources.Email(),
             new IdentityResources.Address(),
-            new IdentityResource("Admin", new List<string>{"Admin" })
-
+            new IdentityResource {
+                Name = "admin",
+                DisplayName = "Identity Management Adminsitrator",
+                UserClaims = new [] { "admin" },
+                Description = "Identity Management Adminsitrator",
+                ShowInDiscoveryDocument = true,
+            },
+            new IdentityResource
+            {
+                Name = "customClaim",
+                DisplayName = "Your custom Identity Info added to tokens",
+                UserClaims = new[] {"customClaim" },
+                Description = "Your custom Identity Info added to tokens",
+                ShowInDiscoveryDocument = true,
+            }
         };
 
         public static IEnumerable<ApiScope> ApiScopes =>
         new List<ApiScope>
         {
-            new ApiScope(){
-                Name = "AnAPI",
-                DisplayName = "Admin",
+            //Flat scopes, no grouping based on logical API design
+            //What the API is looking for when allowing access to an endpoint/resource
+            new ApiScope(
+                name: "AnAPI",
+                displayName: "Administrator Access",
+                userClaims: new [] { "admin", "name", "sub" }),
+            //Read and rewite access to resource/endpoints
+            new ApiScope(
+                name: "invoiceManage", 
+                displayName: "Can read and write invoices", 
+                userClaims: new [] { "invoiceManage" }),
+            new ApiScope(
+                name: "identityManagementAdmin", 
+                displayName: "Can manage others identity", 
+                userClaims: new [] { "sub", "name", "email", "admin"}),
+            //Read only access to resource/endpoints
+            new ApiScope(
+                name: "invoiceRead", 
+                displayName: "Can read invoices", 
+                userClaims: new [] { "invoiceRead" }),
+            new ApiScope(
+                name: "identityManagement", 
+                displayName : "Can manage your identity", 
+                userClaims : new[] { "sub, name, email" }),
+        };
+
+        public static IEnumerable<ApiResource> ApiResources =>
+        new List<ApiResource>
+        {
+            //new ApiResource(name: "identityManagementAdmin", displayName: "Identity Management", userClaims: new [] { "admin", "name"  }){ ApiSecrets: new [] { new Secret("IdManagementSecret".Sha256()) }, },
+
+            new ApiResource
+            {
+                Name = "identityManagementAdmin",
+                DisplayName = "Identity Management",
+                //Description = "Administrator Access",
+                //ApiSecrets = { new Secret("IdManagementSecret".Sha256()) },
+                //the user claim included in access token
+                UserClaims = new [] { "admin", "name" },
+                //the endpoints user/client can access
+                Scopes = new [] { "admin", "write", "read" },
             },
-            new ApiScope("scope", "a scope"),
+
+            new ApiResource()
+            {
+                Name = "identityManagement",
+                DisplayName = "Identity Management",
+                Description = "Administrator Access",
+                UserClaims = { "name", "email" },
+                Scopes = { "write", "read" }
+            },
         };
 
         public static IEnumerable<Client> Clients =>
@@ -56,17 +117,26 @@ namespace STS
 
                 AllowedGrantTypes = GrantTypes.Code,
 
+                RequirePkce = false,
+                AllowPlainTextPkce = false,
+                RequireConsent = false,
+
                 RedirectUris = { "https://localhost:5002/signin-oidc" },
+                FrontChannelLogoutSessionRequired = true,
                 FrontChannelLogoutUri = "https://localhost:5002/signout-oidc",
+                BackChannelLogoutSessionRequired = true,
+                BackChannelLogoutUri = "https://localhost:5002/signout-oidc",
                 PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
 
                 AllowOfflineAccess = true,
                 AllowedScopes = {
+                    //Identity Resouces to include in access token the client app can request
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Address,
-                    IdentityServerConstants.StandardScopes.Email,
-                    "AnAPI", "offline_access"
+                    "customClaim", "identityManagementAdmin", "identityManagement",
+                    //simple APIScopes
+                    "AnAPI", "offline_access", "invoiceManage", "invoiceRead"
                 },
 
                 //The Token settings
@@ -81,8 +151,6 @@ namespace STS
                 AccessTokenType = AccessTokenType.Jwt,
                 AlwaysIncludeUserClaimsInIdToken = true,
                 AlwaysSendClientClaims = true,
-
-                RequireConsent = true,
             },
 
             //JS Client
@@ -90,19 +158,38 @@ namespace STS
             {
                 ClientId = "JSClient",
                 ClientName = "JavaScript Client",
-                AllowedGrantTypes = GrantTypes.Code,
+                Enabled = true,
                 RequireClientSecret = false,
+                AllowedGrantTypes =                         
+                { 
+                    GrantType.AuthorizationCode,
+                    GrantType.ClientCredentials 
+                },
 
-                RedirectUris = {"https://localhost:5003/callback.html", "https://localhost:5003/silent-refresh.html"},
-                PostLogoutRedirectUris = {"https://localhost:5003/index.html"},
-                AllowedCorsOrigins = {"https://localhost:5005", "https://localhost:6001", "https://localhost:5002", "https://localhost:5001", "https://localhost:5003"},
+                RedirectUris = 
+                {
+                    "https://localhost:5003/callback.html", 
+                    "https://localhost:5003/silent-refresh.html"
+                },
+
+                PostLogoutRedirectUris = 
+                {
+                    "https://localhost:5003/index.html"
+                },
+
+                AllowedCorsOrigins = 
+                {
+                    //"https://localhost:5005", 
+                    "https://localhost:6001", 
+                    //"https://localhost:5002", 
+                    "https://localhost:5001", 
+                    "https://localhost:5003"
+                },
 
                 AllowedScopes =
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
-                    IdentityServerConstants.StandardScopes.Address,
-                    IdentityServerConstants.StandardScopes.Email,
                     "AnAPI", "offline_access"
                 },
 
@@ -110,32 +197,65 @@ namespace STS
                 //The Token settings
                 AlwaysIncludeUserClaimsInIdToken = true,
                 AlwaysSendClientClaims = true,
-                RequireConsent = true,
+                //Requies user consent to include claims in token
+                RequireConsent = false,
                 RequirePkce = true,
                 AllowPlainTextPkce = false,
 
                 AllowAccessTokensViaBrowser = true,
+
                 //The refresh token should be long lived (at least longer than the access token).
-                //Once the refresh token expires, the user has to login again. Without sliding expiration the refresh token will expire in an absolute time, having the user to login again.
-                AccessTokenType = AccessTokenType.Jwt,//A self contained token - verification with STS not required on every request 
+                //Once the refresh token expires, the user has to login again.
+                //Without sliding expiration the refresh token will expire in an absolute time,
+                //having the user to login again.
+
+
+                //A self contained token - verification with STS not required on every request
+                AccessTokenType = AccessTokenType.Jwt, 
                 AllowOfflineAccess = true, //Allows Refresh Token
                     
-                //Token lifetime - NOT COOKIE LIFETIME, NOT AUTHENTICATION LIFETIME. Just how long an access token can be used against an API (Resource registered with IS4) 
-                IdentityTokenLifetime = 300, //Default 300 seconds
-                AccessTokenLifetime = 300, //Default 3600 seconds, 1 hour
-                AuthorizationCodeLifetime = 300, //Default 300 seconds: Once User consents, this token should no longer be needed until re-authorization. This AuthorizationCode is used to prove to IS4 that an access token and id token have been constented too and from there the refresh token takes over. So if using refresh tokens, AuthorizationCode shouldn't need a long lifetime. 
-                    
-                AbsoluteRefreshTokenLifetime = 36000, //Defaults to 2592000 seconds / 30 days - NOT GOOD FOR SPA's - 36000 = 10 hours
+                //Token lifetime - NOT COOKIE LIFETIME, NOT AUTHENTICATION LIFETIME.
+                //Just how long an access token can be used against an API (Resource registered with IS4) 
+                //Default 300 seconds
+                IdentityTokenLifetime = 300,
+
+                //Default 3600 seconds, 1 hour
+                AccessTokenLifetime = 300,
+
+                //Default 300 seconds: Once User consents,
+                //this token should no longer be needed until re-authorization.
+                //This AuthorizationCode is used to prove to IS4 that an access token and
+                //id token have been constented too
+                //and from there the refresh token takes over.
+                //So if using refresh tokens, AuthorizationCode shouldn't need a long lifetime.
+                AuthorizationCodeLifetime = 300,
+                
+                //Defaults to 2592000 seconds / 30 days
+                //NOT GOOD FOR SPA's - 36000 = 10 hours
+                AbsoluteRefreshTokenLifetime = 36000,
+
+                //Each time a refresh token is requested, give a new, dispose the old
                 RefreshTokenUsage = TokenUsage.OneTimeOnly,
+
+                //token will be refreshed only if this value has 50% elasped.
+                //If 50% elapsed, refresh will happen.
+                //Setting the accessTokenExpiringNotificationTime of the oidc-client/IdentityModel
+                //client to the same inactive timeout,
+                //will allow refresh on page navigation (assuming access and id tokens haven't already expired)
+                SlidingRefreshTokenLifetime = 150,
                 RefreshTokenExpiration = TokenExpiration.Sliding,
-                SlidingRefreshTokenLifetime = 150,//token will be refreshed only if this value has 50% elasped. Router Guard on Vue Router will ask for refresh on every page navigation. If 50% elapsed, refresh will happen. Setting the accessTokenExpiringNotificationTime of the oidc-client to the same timeout, will allow refresh on page navigation (assuming access and id tokens haven't already expired)
-                UpdateAccessTokenClaimsOnRefresh = true, //Gets or sets a value indicating whether the access token (and its claims) should be updated on a refresh token request.
-                                       
+
+                //Gets or sets a value indicating whether the access token (and its claims)
+                //should be updated on a refresh token request.
+                UpdateAccessTokenClaimsOnRefresh = true,
+
+                //The maximum duration (in seconds) since the last time the user authenticated. 
+                //Defaults to null. 
+                //You can adjust the lifetime of a session token to control when and how often a user is required
+                //to reenter credentials
+                //instead of being silently authenticated, when using a web application.                       
                 UserSsoLifetime = 300,
-                /* The maximum duration (in seconds) since the last time the user authenticated. 
-                    * Defaults to null. 
-                    * You can adjust the lifetime of a session token to control when and how often a user is required to reenter credentials
-                    * instead of being silently authenticated, when using a web application.*/
+
             },
 
             new Client
@@ -146,17 +266,24 @@ namespace STS
 
                 AllowedGrantTypes = GrantTypes.Code,
 
+                 RequirePkce = true,
+                 AllowPlainTextPkce = false,
+                 RequireConsent = false,
+
                 RedirectUris = { "https://localhost:5005/signin-oidc" },
+                FrontChannelLogoutSessionRequired = true,
                 FrontChannelLogoutUri = "https://localhost:5005/signout-oidc",
+                BackChannelLogoutSessionRequired = true,
+                BackChannelLogoutUri = "https://localhost:5005/signout-oidc",
                 PostLogoutRedirectUris = { "https://localhost:5005/signout-callback-oidc" },
 
                 AllowOfflineAccess = true,//Allow the use of refresh tokens
                 AllowedScopes = {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
-                    IdentityServerConstants.StandardScopes.Address,
-                    IdentityServerConstants.StandardScopes.Email,
-                    "AnAPI", "offline_access", "Admin"
+                    "offline_access", 
+                    //Uses APIResource instead of APIScope
+                    "identityManagement", "identityManagementAdmin"
                 },
 
                 //The Token settings
@@ -168,11 +295,10 @@ namespace STS
                 RefreshTokenUsage = TokenUsage.OneTimeOnly,
                 RefreshTokenExpiration = TokenExpiration.Sliding,
                 UpdateAccessTokenClaimsOnRefresh = true,
-                AccessTokenType = AccessTokenType.Reference, //More secure than a Jwt, but requires API to verify with STS on every interaction 
+                //More secure than a Jwt, but requires API to verify with STS on every interaction 
+                AccessTokenType = AccessTokenType.Reference, 
                 AlwaysIncludeUserClaimsInIdToken = true,
                 AlwaysSendClientClaims = true,
-
-                RequireConsent = true,
             }
         };
     }

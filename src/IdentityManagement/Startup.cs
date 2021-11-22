@@ -47,15 +47,6 @@ namespace IdentityManagement
             })
             .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders().AddDefaultUI();
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("default", policy =>
-                {
-                    policy.WithOrigins("https://localhost:5001", "https://localhost:5002", "https://localhost:5003").AllowAnyHeader().AllowAnyMethod();
-                });
-            });
-
-
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = "Cookies";
@@ -109,11 +100,11 @@ namespace IdentityManagement
                     },
                 };
 
-                options.Scope.Add("profile");
                 options.Scope.Add("openid");
-                options.Scope.Add("AnAPI");
+                options.Scope.Add("profile");
                 options.Scope.Add("offline_access");
-                options.Scope.Add("Admin");
+                options.Scope.Add("identityManagement");
+                options.Scope.Add("identityManagementAdmin");
             });
 
             services.AddRazorPages();

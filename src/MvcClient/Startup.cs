@@ -29,7 +29,8 @@ namespace MvcClient
         {
             services.AddControllersWithViews();
 
-            JwtSecurityTokenHandler.DefaultMapInboundClaims = true;
+            //JwtSecurityTokenHandler.DefaultMapInboundClaims = true;
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAccessTokenManagement();
 
             services.AddAuthentication(options =>
@@ -53,14 +54,23 @@ namespace MvcClient
                 options.ClientId = "mvcClient";
                 options.ClientSecret = "aDifferentSecret";
 
-                options.GetClaimsFromUserInfoEndpoint = true;
+                options.GetClaimsFromUserInfoEndpoint = false;
                 options.SaveTokens = true;
-
+               
                 options.ResponseType = "code";
+                options.Scope.Clear();
                 options.Scope.Add("AnAPI");
                 options.Scope.Add("offline_access");
-                options.Scope.Add("email");
-                options.Scope.Add("address");
+                options.Scope.Add("openid");
+                //options.Scope.Add("profile");
+                options.Scope.Add("invoiceRead");
+                options.Scope.Add("invoiceManage");
+                //options.Scope.Add("customClaim");
+                //options.Scope.Add("address");
+                options.Scope.Add("identityManagementAdmin");
+                options.Scope.Add("identityManagement");
+
+                //options.ClaimActions.MapUniqueJsonKey("customClaim", "customClaim");
             });
         }
 

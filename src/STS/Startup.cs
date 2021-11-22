@@ -19,6 +19,7 @@ using IdentityServer4.Configuration;
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using STS.Services.SecurityHeaders;
+using STS.Services;
 
 namespace STS
 {
@@ -45,12 +46,9 @@ namespace STS
                 options.AddPolicy("STSCORS", policy =>
                 {
                     policy.WithOrigins("https://localhost:5005", "https://localhost:6001", "https://localhost:5003", "https://localhost:5002");
-                        //.AllowAnyHeader()
-                        //.AllowAnyMethod()
-                        //.AllowAnyOrigin();
                 });
             });
-
+            
             services.AddIdentity<ApplicationUser, IdentityRole>( options => {
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
@@ -104,7 +102,7 @@ namespace STS
                 options.Cors.CorsPolicyName = "STSCORS";
             })
             .AddAspNetIdentity<ApplicationUser>()
-            .AddProfileService<ProfileService<ApplicationUser>>()
+            .AddProfileService<ProfileService>()
             // this adds the config data from DB (clients, resources, CORS)
             .AddConfigurationStore(options =>
             {
@@ -118,7 +116,7 @@ namespace STS
                 // this enables automatic token cleanup. this is optional.
                 options.EnableTokenCleanup = true;
             });
-
+            services.AddTransient<DefaultProfileService, ProfileService>();
             services.AddAntiforgery(options =>
             {
                 options.Cookie.Name = "STSAnitForgeryCookie";
@@ -164,7 +162,7 @@ namespace STS
                 options.SlidingExpiration = true;
             });
             
-            services.AddTransient<IProfileService, ProfileService<ApplicationUser>>();
+            
         }
 
         public void Configure(IApplicationBuilder app)
@@ -187,9 +185,8 @@ namespace STS
             app.UseStaticFiles();
 
             app.UseRouting();
-            
-            app.UseIdentityServer();
             app.UseCookiePolicy();
+            app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

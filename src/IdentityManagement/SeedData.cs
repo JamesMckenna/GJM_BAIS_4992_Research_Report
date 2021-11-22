@@ -56,8 +56,10 @@ namespace IdentityManagement
                             new Claim(JwtClaimTypes.GivenName, "Alice"),
                             new Claim(JwtClaimTypes.FamilyName, "Smith"),
                             new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
-                            new Claim("location", "somewhere"),
-                            new Claim("Admin", "Admin"),
+                            new Claim("address", "cloud nine"),
+                            new Claim("admin", "Id Administrator"),
+                            new Claim("invoiceManage", "read.invoice"),
+                            new Claim("invoiceManage", "write.invoice"),
                         }).Result;
                         if (!result.Succeeded)
                         {
@@ -90,8 +92,9 @@ namespace IdentityManagement
                             new Claim(JwtClaimTypes.GivenName, "Bob"),
                             new Claim(JwtClaimTypes.FamilyName, "Smith"),
                             new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-                            new Claim("location", "somewhere"),
-                            new Claim("AppCustomClaim", "AppCustomClaim"),
+                            new Claim("address", "7th level of hell"),
+                            new Claim("customClaim", "Custom IdentityClaim"),
+                            new Claim("invoiceRead", "read.invoice")
                         }).Result;
                         if (!result.Succeeded)
                         {

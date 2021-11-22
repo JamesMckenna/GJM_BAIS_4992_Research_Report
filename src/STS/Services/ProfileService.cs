@@ -9,21 +9,23 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
-namespace IS4Login.Services
+namespace STS.Services
 {
-    public class IS4LoginProfileService : IProfileService
+    public class ProfileService : DefaultProfileService
     {
         private readonly IUserClaimsPrincipalFactory<ApplicationUser> _claimsFactory;
         private readonly UserManager<ApplicationUser> _userManager;
+        
 
-        public IS4LoginProfileService(UserManager<ApplicationUser> userManager, IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory)
+        public ProfileService(UserManager<ApplicationUser> userManager, IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory, ILogger<DefaultProfileService> logger) : base(logger)
         {
             _userManager = userManager;
             _claimsFactory = claimsFactory;
         }
 
-        public async Task GetProfileDataAsync(ProfileDataRequestContext context)
+        public override async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             var sub = context.Subject.GetSubjectId();
             var user = await _userManager.FindByIdAsync(sub);
@@ -31,28 +33,63 @@ namespace IS4Login.Services
 
             var claims = principal.Claims.ToList();
 
-            //https://damienbod.com/2016/11/18/extending-identity-in-identityserver4-to-manage-users-in-asp-net-core/
-            //above link shows how to add Roles to claims, link is old but gives good guidance 
-
             claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
 
-            claims.Add(new Claim(JwtClaimTypes.Name, user.UserName));
+            if (context.Caller == "ClaimsProviderAccessToken")
+            {
+                claims.Add(new Claim(JwtClaimTypes.Name, user.UserName));
+                claims.Add(new Claim(IdentityServerConstants.StandardScopes.OpenId, sub));
+                claims.Add(new Claim(JwtClaimTypes.Scope, "AnAPI"));
+                claims.Add(new Claim(JwtClaimTypes.Scope, "read"));
+                claims.Add(new Claim(JwtClaimTypes.Scope, "write"));
+                if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "identityManagement").FirstOrDefault()?.Value))
+                {
+                    claims.Add(new Claim("identityManagement", principal.Claims.Where(claim => claim.Type == "identityManagement").FirstOrDefault()?.Value));
+                }
+                if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "identityManagement").FirstOrDefault()?.Value))
+                {
+                    claims.Add(new Claim("identityManagementAdmin", principal.Claims.Where(claim => claim.Type == "identityManagementAdmin").FirstOrDefault()?.Value));
+                }
+            }
 
-            claims.Add(new Claim("AppCustomClaim", "CustomClaim"));
-            claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email));
-            claims.Add(new Claim("Admin", "Admin"));
-            claims.Add(new Claim("location", "somewhere"));
+            if (context.Caller == "ClaimsProviderIdentityToken")
+            {
+                claims.Add(new Claim(JwtClaimTypes.Name, user.UserName));
+                claims.Add(new Claim(IdentityServerConstants.StandardScopes.OpenId, sub));
+                claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email));
+            }
+
+            if (context.Caller == "UserInfoEndpoint")
+            {
+                claims.Add(new Claim(JwtClaimTypes.Name, user.UserName));
+                claims.Add(new Claim(IdentityServerConstants.StandardScopes.OpenId, sub));
+                claims.Add(new Claim(IdentityServerConstants.StandardScopes.Profile, user.UserName));
+                claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email));
+                //Some users may have claims other may not, so check before trying to pass a claim with value of null
+                if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "address").FirstOrDefault()?.Value))
+                {
+                    claims.Add(new Claim("address", principal.Claims.Where(claim => claim.Type == "address").FirstOrDefault()?.Value));
+                }
+                if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "customClaim").FirstOrDefault()?.Value))
+                {
+                    claims.Add(new Claim("customClaim", principal.Claims.Where(claim => claim.Type == "customClaim").FirstOrDefault()?.Value));
+                }
+                if (!String.IsNullOrWhiteSpace(principal.Claims.Where(claim => claim.Type == "website").FirstOrDefault()?.Value))
+                {
+                    claims.Add(new Claim("website", principal.Claims.Where(claim => claim.Type == "website").FirstOrDefault()?.Value));
+                }
+            }
 
             context.IssuedClaims = claims;
         }
 
-        public async Task IsActiveAsync(IsActiveContext context)
+        public override async Task IsActiveAsync(IsActiveContext context)
         {
             var sub = context.Subject.GetSubjectId();
             var user = await _userManager.FindByIdAsync(sub);
             var active = (user != null && (!user.LockoutEnabled || user.LockoutEnd == null)) ||
-             (user != null && user.LockoutEnabled && user.LockoutEnd != null &&
-              DateTime.UtcNow > user.LockoutEnd);
+            (user != null && user.LockoutEnabled && user.LockoutEnd != null &&
+            DateTime.UtcNow > user.LockoutEnd);
 
             context.IsActive = active;
         }
