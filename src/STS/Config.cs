@@ -156,11 +156,7 @@ namespace STS
                 ClientName = "JavaScript Client",
                 Enabled = true,
                 RequireClientSecret = false,
-                //AllowedGrantTypes =                         
-                //{ 
-                //    GrantType.AuthorizationCode,
-                //    GrantType.ClientCredentials 
-                //},
+
                 AllowedGrantTypes = GrantTypes.Code,
 
 
