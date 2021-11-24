@@ -21,15 +21,19 @@ namespace MvcClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
+            //Clear Microsoft default Claim mapping
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            //Adds user and client access token management with IdentityModel library
             services.AddAccessTokenManagement();
-
+            
             services.AddAuthentication(options =>
             {
+                //Token are in cookies
                 options.DefaultScheme = "Cookies";
+                //Use OpenID Connect protocol
                 options.DefaultChallengeScheme = "oidc";
             })
+            //Create this application's cookie to hold token 
             .AddCookie("Cookies", options =>
             {
                 options.Cookie.Name = "mvcClient";
@@ -39,6 +43,8 @@ namespace MvcClient
                 };
 
             })
+
+            //Authorization Handler, use OpenID Connect handler
             .AddOpenIdConnect("oidc", options =>
             {
                 options.Authority = "https://localhost:5001";
@@ -46,19 +52,27 @@ namespace MvcClient
                 options.ClientId = "mvcClient";
                 options.ClientSecret = "aDifferentSecret";
 
-                //Indicates that the authentication session lifetime (e.g. cookies) should match that of the authentication token.
-                //If the token does not provide lifetime information then normal session lifetimes will be used. This is disabled by default.
+                //Indicates that the authentication session lifetime (e.g. cookies)
+                //should match that of the authentication token.
+                //If the token does not provide lifetime information then normal
+                //session lifetimes will be used. This is disabled by default.
                 options.UseTokenLifetime = true;
 
                 //Don't include all User claims in id token,
-                //a client needs to make a seperate request to UserInfo Endpoint to get all a User's claims
+                //a client needs to make a seperate request to
+                //UserInfo Endpoint to get all a User's claims
+                //True will put all Identity Resources registered for this client in the tokens
+                //False only puts some Identity Resources in tokens
+                //Get the rest from endpoint - see ProfileService covered in report
                 options.GetClaimsFromUserInfoEndpoint = false;
                 options.SaveTokens = true;
-               
+
+
+                //OAuth 2.0 / OpenID Connect GrantType registered with STS Config.cs
                 options.ResponseType = "code";
                 //Clean slate
                 options.Scope.Clear();
-                //Scope the client is requesting in the access token must match STS Config.cs
+                //Scopes the client is requesting in the access token must match STS Config.cs
                 options.Scope.Add("AnAPI");
                 options.Scope.Add("offline_access");
                 options.Scope.Add("openid");
@@ -84,7 +98,9 @@ namespace MvcClient
             app.UseStaticFiles();
 
             app.UseRouting();
+            //Add Autnentication to request/response pipeline (middleware)
             app.UseAuthentication();
+            //Add Authentication to request/response pipeline (middleware)
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

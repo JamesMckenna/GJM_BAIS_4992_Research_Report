@@ -124,17 +124,21 @@ namespace STS
                 BackChannelLogoutUri = "https://localhost:5002/signout-oidc",
                 PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
 
-                AllowOfflineAccess = true,
+                
                 AllowedScopes = {
                     //Identity Resouces to include in access token the client app can request
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Address,
-                    "customClaim", "identityManagementAdmin", "identityManagement", "admin",
+                    "customClaim",  "admin",
+                    //APIResources Client can request
+                    "identityManagementAdmin", "identityManagement",
                     //simple APIScopes
                     "AnAPI", "offline_access", "invoiceManage", "invoiceRead"
                 },
 
+
+                AllowOfflineAccess = true,
                 //The Token settings
                 IdentityTokenLifetime = 300,
                 AccessTokenLifetime = 3600,
