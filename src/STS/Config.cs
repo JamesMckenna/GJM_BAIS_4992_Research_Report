@@ -113,7 +113,7 @@ namespace STS
 
                 AllowedGrantTypes = GrantTypes.Code,
 
-                RequirePkce = false,
+                RequirePkce = true,
                 AllowPlainTextPkce = false,
                 RequireConsent = false,
 

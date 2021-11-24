@@ -46,14 +46,19 @@ namespace MvcClient
                 options.ClientId = "mvcClient";
                 options.ClientSecret = "aDifferentSecret";
 
+                //Indicates that the authentication session lifetime (e.g. cookies) should match that of the authentication token.
+                //If the token does not provide lifetime information then normal session lifetimes will be used. This is disabled by default.
+                options.UseTokenLifetime = true;
+
                 //Don't include all User claims in id token,
                 //a client needs to make a seperate request to UserInfo Endpoint to get all a User's claims
                 options.GetClaimsFromUserInfoEndpoint = false;
                 options.SaveTokens = true;
                
                 options.ResponseType = "code";
+                //Clean slate
                 options.Scope.Clear();
-                //Scope the client is requesting in the accees token
+                //Scope the client is requesting in the access token must match STS Config.cs
                 options.Scope.Add("AnAPI");
                 options.Scope.Add("offline_access");
                 options.Scope.Add("openid");
