@@ -45,10 +45,15 @@ namespace STS
             {
                 options.AddPolicy("STSCORS", policy =>
                 {
-                    policy.WithOrigins("https://localhost:5005", "https://localhost:6001", "https://localhost:5003", "https://localhost:5002");
+                    policy.WithOrigins(
+                        "https://localhost:5005",
+                        "https://localhost:6001",
+                        "https://localhost:5003",
+                        "https://localhost:5002");
                 });
             });
             
+            //Configuring a default IdP
             services.AddIdentity<ApplicationUser, IdentityRole>( options => {
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
@@ -64,12 +69,14 @@ namespace STS
                 options.SignIn.RequireConfirmedEmail = true;
                 options.SignIn.RequireConfirmedPhoneNumber = false;
 
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._+";
+                options.User.AllowedUserNameCharacters = 
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._+";
                 options.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+            //Adding IdentityServer4 Middleware to IOC and make this app a STS
             var builder = services.AddIdentityServer(options =>
             {
                 options.Events.RaiseErrorEvents = true;
@@ -79,7 +86,7 @@ namespace STS
 
                 // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
                 options.EmitStaticAudienceClaim = true;
-
+                //Endpoints this app provides for Login and Logout
                 options.UserInteraction = new UserInteractionOptions
                 {
                     LogoutUrl = "/Account/Logout",
@@ -89,7 +96,7 @@ namespace STS
 
                 options.Csp.Level = IdentityServer4.Models.CspLevel.Two;
               
-                //Session Cookie
+                //Session Cookie Configuration - NOT the Token cookies
                 options.Authentication.CheckSessionCookieName = "STSSessionCookie";
                 options.Authentication.CookieLifetime = TimeSpan.FromSeconds(3600);
                 options.Authentication.CookieSlidingExpiration = true;
@@ -106,12 +113,14 @@ namespace STS
             // this adds the config data from DB (clients, resources, CORS)
             .AddConfigurationStore(options =>
             {
-                options.ConfigureDbContext = builder => builder.UseSqlite(Configuration.GetConnectionString("STSConfigurationConnection"));
+                options.ConfigureDbContext = builder => 
+                builder.UseSqlite(Configuration.GetConnectionString("STSConfigurationConnection"));
             })
             // this adds the operational data from DB (codes, tokens, consents)
             .AddOperationalStore(options =>
             {
-                options.ConfigureDbContext = builder => builder.UseSqlite(Configuration.GetConnectionString("STSOperationalConnection"));
+                options.ConfigureDbContext = builder => 
+                builder.UseSqlite(Configuration.GetConnectionString("STSOperationalConnection"));
 
                 // this enables automatic token cleanup. this is optional.
                 options.EnableTokenCleanup = true;
@@ -127,7 +136,7 @@ namespace STS
             });
 
 
-            // not recommended for production - you need to store your key material somewhere secure
+            // not recommended for production - Use a 509x certificate for production
             builder.AddDeveloperSigningCredential();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -185,9 +194,11 @@ namespace STS
             app.UseStaticFiles();
 
             app.UseRouting();
+
             app.UseCookiePolicy();
             app.UseIdentityServer();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
